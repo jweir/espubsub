@@ -18,8 +18,8 @@ https://github.com/remy/polyfills/blob/master/EventSource.js
 https://github.com/Yaffle/EventSource
 
 ### Demo
-
-    cd examples
+    git clone git@github.com:jweir/espubsub.git
+    cd espubsub/examples
     go run server.go
 
 Connect to http://localhost:8080/ with your browser
