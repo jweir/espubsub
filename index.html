@@ -18,13 +18,8 @@
         <header class="inner">
           <a id="forkme_banner" href="https://github.com/jweir/espubsub">View on GitHub</a>
 
-          <h1 id="project_title">Espubsub</h1>
+          <h1 id="project_title">ESPubSub</h1>
           <h2 id="project_tagline">EventSource server backed by Redis PubSub</h2>
-
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/jweir/espubsub/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/jweir/espubsub/tarball/master">Download this project as a tar.gz file</a>
-            </section>
         </header>
     </div>
 
@@ -50,13 +45,18 @@ will need to connect to a running Redis server.</p>
 
 <p><a href="https://github.com/Yaffle/EventSource">https://github.com/Yaffle/EventSource</a></p>
 
+<h3>Install</h3>
+
+<pre><code>go get github.com/jweir/espubsub</code></pre>
+
 <h3>Demo</h3>
 
-<pre><code>cd examples
+<pre><code>git clone git@github.com:jweir/espubsub.git
+cd espubsub/examples
 go run server.go
 </code></pre>
 
-<p>Connect to http://localhost:8080/ with your browser</p>
+<p>Connect to <a href="http://localhost:8080/">http://localhost:8080/</a> with your browser</p>
 
 <p>From the command line send Redis PUBLISH commands</p>
 
