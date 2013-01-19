@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Espubsub : EventSource server backed by Redis PubSub" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Espubsub</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/jweir/espubsub">View on GitHub</a>
+
+          <h1 id="project_title">Espubsub</h1>
+          <h2 id="project_tagline">EventSource server backed by Redis PubSub</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/jweir/espubsub/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/jweir/espubsub/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <p>Easily send messages downstream to a web browser on dedicated channels.</p>
+
+<h2>Redis backed Pub/Sub EventSource server</h2>
+
+<p>ESPubSub is a Go HTTP Handler which allows clients to subscribe to channels via
+<strong>EventSource</strong>. Event Source is a simple browser api for reading from a long
+poll connection. Browsers(except IE and Android mobile) support it.</p>
+
+<p>Channels receive data (strings) via a Redis PUBLISH command. ESPubSub
+will need to connect to a running Redis server.</p>
+
+<p>This has not been used in production.</p>
+
+<p>Some EventSource polyfills (which I have not tried)</p>
+
+<p><a href="https://github.com/remy/polyfills/blob/master/EventSource.js">https://github.com/remy/polyfills/blob/master/EventSource.js</a></p>
+
+<p><a href="https://github.com/Yaffle/EventSource">https://github.com/Yaffle/EventSource</a></p>
+
+<h3>Demo</h3>
+
+<pre><code>cd examples
+go run server.go
+</code></pre>
+
+<p>Connect to http://localhost:8080/ with your browser</p>
+
+<p>From the command line send Redis PUBLISH commands</p>
+
+<pre><code>redis-cli PUBLISH /events/alpha "Hello Alpha"
+redis-cli PUBLISH /events/beta "`date`"
+</code></pre>
+
+<p>The demo shows has one channel(<code>/events/*</code>) using a glob to listen to multiple channels.</p>
+
+<h2>Made Possible By</h2>
+
+<p><a href="http://github.com/antage/eventsource">http://github.com/antage/eventsource</a> and <a href="http://github.com/vmihailenco/redis">http://github.com/vmihailenco/redis</a></p>
+
+<h1>LICENSE</h1>
+
+<p>Copyright (c) 2012 John Weir</p>
+
+<p>Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+of the Software, and to permit persons to whom the Software is furnished to do
+so, subject to the following conditions:</p>
+
+<p>The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.</p>
+
+<p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Espubsub maintained by <a href="https://github.com/jweir">jweir</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-605430-4");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+
+  </body>
+</html>
