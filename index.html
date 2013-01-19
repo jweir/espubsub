@@ -28,7 +28,7 @@
       <section id="main_content" class="inner">
         <p>Easily send messages downstream to a web browser on dedicated channels.</p>
 
-<h2>Redis backed Pub/Sub EventSource server</h2>
+<h2>Simple Pub/Sub EventSource server, backed by Redis</h2>
 
 <p>ESPubSub is a Go HTTP Handler which allows clients to subscribe to channels via
 <strong>EventSource</strong>. Event Source is a simple browser api for reading from a long
@@ -66,11 +66,11 @@ redis-cli PUBLISH /events/beta "`date`"
 
 <p>The demo shows has one channel(<code>/events/*</code>) using a glob to listen to multiple channels.</p>
 
-<h2>Made Possible By</h2>
+<h4>Made Possible By</h4>
 
 <p><a href="http://github.com/antage/eventsource">http://github.com/antage/eventsource</a> and <a href="http://github.com/vmihailenco/redis">http://github.com/vmihailenco/redis</a></p>
 
-<h1>LICENSE</h1>
+<h4>LICENSE</h4>
 
 <p>Copyright (c) 2012 John Weir</p>
 
