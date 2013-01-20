@@ -7,6 +7,7 @@ import (
 	"io"
 	"net"
 	"net/http/httptest"
+	"sort"
 	"strings"
 	"testing"
 	"time"
@@ -128,4 +129,26 @@ func TestPattenMatchingSubscriptions(t *testing.T) {
 	e.redis.Publish("/events/bar", "message 3")
 	expectNotInResponse(t, conn0, "message 3")
 	expectNotInResponse(t, conn1, "message 3")
+}
+
+func TestConsumerCountAndChannels(t *testing.T) {
+	e := setup(t)
+	defer teardown(t, e)
+
+	conn0, _ := startEventStream(t, e, "/events/bar")
+	defer conn0.Close()
+
+	conn1, _ := startEventStream(t, e, "/events/foo")
+	defer conn1.Close()
+
+	channels := e.s.Channels()
+	sort.Strings(channels)
+	actual := (strings.Join(channels, ","))
+	expecting := ("/events/bar,/events/foo")
+
+	if actual != expecting {
+		t.Errorf("channels do not match %s, %s", expecting, actual)
+	}
+
+	time.Sleep(100 * time.Millisecond)
 }

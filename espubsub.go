@@ -39,6 +39,9 @@ type ESPubSub interface {
 
 	// close all Redis clients and EventSource connections
 	Close()
+
+	// list all channels subscribed too
+	Channels() []string
 }
 
 type subCollection struct {
@@ -93,6 +96,13 @@ func (sc *subCollection) newSubscription(pubChan string) {
 	es := eventsource.New(nil)
 	s := subscription{pubsub, es, redisCh, pubChan}
 	sc.subscriptions[pubChan] = s
+}
+
+func (sc *subCollection) Channels() (channels []string) {
+	for _, s := range sc.subscriptions {
+		channels = append(channels, s.pubChan)
+	}
+	return
 }
 
 func (sc *subCollection) ServeHTTP(resp http.ResponseWriter, req *http.Request) {
