@@ -4,18 +4,11 @@ Easily send messages downstream to a web browser on dedicated channels.
 
 ESPubSub is a Go HTTP Handler which allows clients to subscribe to channels via
 **EventSource**. Event Source is a simple browser api for reading from a long
-poll connection. Browsers(except IE and Android mobile) support it.
+poll connection. Allow common browsers, except IE and Android mobile, support
+it. See the poyfills for unsupported browsers.
 
 Channels receive data (strings) via a Redis PUBLISH command. ESPubSub
 will need to connect to a running Redis server.
-
-This has not been used in production.
-
-Some EventSource polyfills (which I have not tried)
-
-https://github.com/remy/polyfills/blob/master/EventSource.js
-
-https://github.com/Yaffle/EventSource
 
 ### Demo
     git clone git@github.com:jweir/espubsub.git
@@ -31,7 +24,15 @@ From the command line send Redis PUBLISH commands
 
 The demo shows has one channel(`/events/*`) using a glob to listen to multiple channels.
 
-## Made Possible By
+### Polyfills
+
+Some EventSource polyfills for unsupported browsers
+
+https://github.com/remy/polyfills/blob/master/EventSource.js
+
+https://github.com/Yaffle/EventSource
+
+### Made Possible By
 
 http://github.com/antage/eventsource and http://github.com/vmihailenco/redis
 
