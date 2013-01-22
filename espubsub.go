@@ -58,14 +58,28 @@ type subscription struct {
 }
 
 // listen for published events and send to the EventSource
-func (s subscription) open() {
+func (sc *subCollection) open(s subscription) {
+  firstMessage := false
+
 	for {
 		msg, ok := <-s.redisCh
+    if firstMessage && s.es.ConsumersCount() == 0 {
+			log.Printf("no more consumers on %s", s.pubChan)
+      sc.remove(s)
+      return
+    }
+    firstMessage = true
 		if ok {
 			s.es.SendMessage(msg.Message, "", "")
 			log.Printf("message on %s (consumers: %d)", s.pubChan, s.es.ConsumersCount())
 		}
 	}
+}
+
+// remove the subscription from the collection and close it
+func (sc *subCollection) remove(s subscription){
+  s.close()
+  delete(sc.subscriptions, s.pubChan)
 }
 
 func (s subscription) close() {
@@ -111,7 +125,7 @@ func (sc *subCollection) ServeHTTP(resp http.ResponseWriter, req *http.Request) 
 
 	if !existing {
 		sc.newSubscription(pubChan)
-		go sc.subscriptions[pubChan].open()
+		go sc.open(sc.subscriptions[pubChan])
 	}
 
 	log.Printf("subscribed to %s", pubChan)

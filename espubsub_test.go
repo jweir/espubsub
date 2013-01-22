@@ -11,7 +11,10 @@ import (
 	"strings"
 	"testing"
 	"time"
+  "log"
+  "io/ioutil"
 )
+
 
 type testEnv struct {
 	redis  *redis.Client
@@ -20,6 +23,9 @@ type testEnv struct {
 }
 
 func setup(t *testing.T) *testEnv {
+  // comment out below to see logging
+  log.SetOutput(ioutil.Discard)
+
 	t.Log("creating a test env")
 	e := new(testEnv)
 	e.s = New(":6379", "", -1)
@@ -50,7 +56,7 @@ func read(t *testing.T, c net.Conn) string {
 }
 
 func expectResponse(t *testing.T, c net.Conn, expecting string) {
-	time.Sleep(100 * time.Millisecond)
+	time.Sleep(10 * time.Millisecond)
 	resp := read(t, c)
 
 	if !strings.Contains(resp, expecting) {
@@ -59,8 +65,8 @@ func expectResponse(t *testing.T, c net.Conn, expecting string) {
 }
 
 func expectNotInResponse(t *testing.T, c net.Conn, expecting string) {
-	time.Sleep(100 * time.Millisecond)
-	c.SetReadDeadline(time.Now().Add(100 * time.Millisecond))
+	time.Sleep(10 * time.Millisecond)
+	c.SetReadDeadline(time.Now().Add(10 * time.Millisecond))
 	defer c.SetReadDeadline(time.Time{}) // clear the deadline
 
 	resp := read(t, c)
@@ -150,5 +156,32 @@ func TestConsumerCountAndChannels(t *testing.T) {
 		t.Errorf("channels do not match %s, %s", expecting, actual)
 	}
 
-	time.Sleep(100 * time.Millisecond)
+	time.Sleep(10 * time.Millisecond)
+}
+
+func TestClosesSubscriptionWhenConsumersIsZero(t *testing.T) {
+	e := setup(t)
+  defer teardown(t, e)
+
+	conn0, _ := startEventStream(t, e, "/events/bar")
+	conn1, _ := startEventStream(t, e, "/events/bar")
+
+	time.Sleep(10 * time.Millisecond)
+
+	conn0.Close()
+	conn1.Close()
+
+	e.redis.Publish("/events/bar", "m")
+	e.redis.Publish("/events/bar", "m")
+	e.redis.Publish("/events/bar", "m")
+	e.redis.Publish("/events/bar", "m")
+
+	time.Sleep(10 * time.Millisecond)
+
+	channels := e.s.Channels()
+	actual := (strings.Join(channels, ","))
+
+	if actual != "" {
+		t.Errorf("channels are not empty %s", actual)
+	}
 }
