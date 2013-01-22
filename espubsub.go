@@ -37,106 +37,109 @@ type ESPubSub interface {
 	// implements the ServerHTTP method
 	http.Handler
 
-	// close all Redis clients and EventSource connections
+	// close all Redis channels and EventSource connections
 	Close()
 
 	// list all channels subscribed too
 	Channels() []string
 }
 
-type subCollection struct {
-	subscriptions map[string]subscription
-	redisClient   *redis.Client
+type chanCollection struct {
+	channels    map[string]channel
+	redisClient *redis.Client
 }
 
 // binds a Redis subsciptions to an EventSource
-type subscription struct {
-	pubsub  *redis.PubSubClient
-	es      eventsource.EventSource
-	redisCh chan *redis.Message
-	pubChan string // channel to listen on
+type channel struct {
+	pubsub    *redis.PubSubClient
+	es        eventsource.EventSource
+	redisCh   chan *redis.Message
+	id        string // channel to listen on
+	activated bool   // has this channel received a message yet
 }
 
-// listen for published events and send to the EventSource
-func (sc *subCollection) open(s subscription) {
-  firstMessage := false
-
-	for {
-		msg, ok := <-s.redisCh
-    if firstMessage && s.es.ConsumersCount() == 0 {
-			log.Printf("no more consumers on %s", s.pubChan)
-      sc.remove(s)
-      return
-    }
-    firstMessage = true
-		if ok {
-			s.es.SendMessage(msg.Message, "", "")
-			log.Printf("message on %s (consumers: %d)", s.pubChan, s.es.ConsumersCount())
-		}
-	}
+func (s channel) consumers() int {
+	return s.es.ConsumersCount()
 }
 
-// remove the subscription from the collection and close it
-func (sc *subCollection) remove(s subscription){
-  s.close()
-  delete(sc.subscriptions, s.pubChan)
-}
-
-func (s subscription) close() {
-	log.Printf("closing %s", s.pubChan)
+func (s channel) close() {
+	log.Printf("closing %s", s.id)
 	s.pubsub.Close()
 	s.es.Close()
 }
 
-func (sc *subCollection) Close() {
-	for _, s := range sc.subscriptions {
-		s.close()
+// listen for published events and send to the EventSource
+func (sc *chanCollection) open(s channel) {
+	for {
+		msg, ok := <-s.redisCh
+		if s.activated && s.consumers() == 0 {
+			log.Printf("zero consumers on %s", s.id)
+			sc.remove(s)
+			return
+		}
+		if ok {
+			s.activated = true
+			s.es.SendMessage(msg.Message, "", "")
+			log.Printf(">> %s (consumers: %d)", s.id, s.consumers())
+		}
 	}
 }
 
-func (sc *subCollection) newSubscription(pubChan string) {
-	log.Printf("creating channel %s", pubChan)
+// remove the channel from the collection and close it
+func (sc *chanCollection) remove(s channel) {
+	s.close()
+	delete(sc.channels, s.id)
+}
+
+func (sc *chanCollection) newChannel(id string) {
+	log.Printf("creating channel %s", id)
 
 	pubsub, err := sc.redisClient.PubSubClient()
 	if err != nil {
 		panic(err)
 	}
 
-	redisCh, err := pubsub.PSubscribe(pubChan)
+	redisCh, err := pubsub.PSubscribe(id)
 	if err != nil {
 		panic(err)
 	}
 
 	es := eventsource.New(nil)
-	s := subscription{pubsub, es, redisCh, pubChan}
-	sc.subscriptions[pubChan] = s
+	s := channel{pubsub, es, redisCh, id, false}
+	sc.channels[id] = s
 }
 
-func (sc *subCollection) Channels() (channels []string) {
-	for _, s := range sc.subscriptions {
-		channels = append(channels, s.pubChan)
+func (sc *chanCollection) Close() {
+	for _, s := range sc.channels {
+		sc.remove(s)
+	}
+}
+
+func (sc *chanCollection) Channels() (channels []string) {
+	for _, s := range sc.channels {
+		channels = append(channels, s.id)
 	}
 	return
 }
 
-func (sc *subCollection) ServeHTTP(resp http.ResponseWriter, req *http.Request) {
-	pubChan := req.URL.Path[0:]
-	_, existing := sc.subscriptions[pubChan]
+func (sc *chanCollection) ServeHTTP(resp http.ResponseWriter, req *http.Request) {
+	id := req.URL.Path[0:]
+	_, existing := sc.channels[id]
 
 	if !existing {
-		sc.newSubscription(pubChan)
-		go sc.open(sc.subscriptions[pubChan])
+		sc.newChannel(id)
+		go sc.open(sc.channels[id])
 	}
 
-	log.Printf("subscribed to %s", pubChan)
+	log.Printf("subscribed to %s", id)
 
-	sc.subscriptions[pubChan].es.ServeHTTP(resp, req)
+	sc.channels[id].es.ServeHTTP(resp, req)
 }
 
 // Creates a new ESPubSub handler.
 func New(redisHost, redisPassword string, redisDb int64) ESPubSub {
-	s := new(subCollection)
-	s.subscriptions = map[string]subscription{}
+	s := new(chanCollection)
+	s.channels = map[string]channel{}
 
 	s.redisClient = redis.NewTCPClient(redisHost, redisPassword, redisDb)
 	return s

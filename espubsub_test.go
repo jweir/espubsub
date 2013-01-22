@@ -5,16 +5,15 @@ package espubsub
 import (
 	redis "github.com/vmihailenco/redis"
 	"io"
+	"io/ioutil"
+	"log"
 	"net"
 	"net/http/httptest"
 	"sort"
 	"strings"
 	"testing"
 	"time"
-  "log"
-  "io/ioutil"
 )
-
 
 type testEnv struct {
 	redis  *redis.Client
@@ -23,8 +22,8 @@ type testEnv struct {
 }
 
 func setup(t *testing.T) *testEnv {
-  // comment out below to see logging
-  log.SetOutput(ioutil.Discard)
+	// comment out below to see logging
+	log.SetOutput(ioutil.Discard)
 
 	t.Log("creating a test env")
 	e := new(testEnv)
@@ -66,7 +65,8 @@ func expectResponse(t *testing.T, c net.Conn, expecting string) {
 
 func expectNotInResponse(t *testing.T, c net.Conn, expecting string) {
 	time.Sleep(10 * time.Millisecond)
-	c.SetReadDeadline(time.Now().Add(10 * time.Millisecond))
+
+	c.SetReadDeadline(time.Now().Add(20 * time.Millisecond))
 	defer c.SetReadDeadline(time.Time{}) // clear the deadline
 
 	resp := read(t, c)
@@ -161,7 +161,7 @@ func TestConsumerCountAndChannels(t *testing.T) {
 
 func TestClosesSubscriptionWhenConsumersIsZero(t *testing.T) {
 	e := setup(t)
-  defer teardown(t, e)
+	defer teardown(t, e)
 
 	conn0, _ := startEventStream(t, e, "/events/bar")
 	conn1, _ := startEventStream(t, e, "/events/bar")
