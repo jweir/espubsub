@@ -58,6 +58,7 @@ type channel struct {
 	activated bool   // has this channel received a message yet
 }
 
+// the number of consumers subscibed to the channel
 func (s channel) consumers() int {
 	return s.es.ConsumersCount()
 }
