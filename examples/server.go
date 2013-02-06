@@ -1,13 +1,11 @@
 // create a simple PubSub server
-//
 //  go run example.go
 //
 // in another terminal
-//
 //  curl http://localhost:8080/events/foo
+//  # or open a web browser to http://localhost:8080
 //
 // and finally in another terminal
-//
 //  redis-cli PUBLISH /events/foo 'hello world'
 package main
 
