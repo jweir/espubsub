@@ -10,7 +10,7 @@
 package main
 
 import (
-	espubsub "../"
+	espubsub "github.com/jweir/espubsub"
 	"log"
 	"net/http"
 )
