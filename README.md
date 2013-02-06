@@ -12,8 +12,8 @@ will need to connect to a running Redis server.
 
 ### Demo
     git clone git@github.com:jweir/espubsub.git
-    cd espubsub/examples
-    go run server.go
+    cd espubsub/server
+    go run espubsub_server.go
 
 Connect to http://localhost:8080/ with your browser
 
