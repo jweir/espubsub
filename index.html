@@ -26,71 +26,70 @@
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
-        <p>Easily send messages downstream to a web browser on dedicated channels.</p>
 
-<h2>Simple Pub/Sub EventSource server, backed by Redis</h2>
+        <p>You want to <em><b>easilly</b></em> send messages, or notifications, to a web browser.  You like Redis. You will love ESPubSub</p>
 
-<p>ESPubSub is a Go HTTP Handler which allows clients to subscribe to channels via
-<strong>EventSource</strong>. Event Source is a simple browser api for reading from a long
-poll connection. Browsers(except IE and Android mobile) support it.</p>
+        <h3>Try it fast</h3>
+        You have Go installed and a Redis server is running (on the default port, without a password*)
 
-<p>Channels receive data (strings) via a Redis PUBLISH command. ESPubSub
-will need to connect to a running Redis server.</p>
-
-<p>This has not been used in production.</p>
-
-<p>Some EventSource polyfills (which I have not tried)</p>
-
-<p><a href="https://github.com/remy/polyfills/blob/master/EventSource.js">https://github.com/remy/polyfills/blob/master/EventSource.js</a></p>
-
-<p><a href="https://github.com/Yaffle/EventSource">https://github.com/Yaffle/EventSource</a></p>
-
-<h3>Install</h3>
-
-<pre><code>go get github.com/jweir/espubsub</code></pre>
-
-<h3>Demo</h3>
-
-<pre><code>git clone git@github.com:jweir/espubsub.git
+        <pre><code>git clone git@github.com:jweir/espubsub.git
 cd espubsub/examples
-go run server.go
-</code></pre>
+go run server.go</code></pre>
 
-<p>Connect to <a href="http://localhost:8080/">http://localhost:8080/</a> with your browser</p>
+        <p>Connect to <a href="http://localhost:8080/">http://localhost:8080/</a> with your browser</p>
 
-<p>From the command line send Redis PUBLISH commands</p>
+        <p>From the command line send Redis PUBLISH commands</p>
 
-<pre><code>redis-cli PUBLISH /events/alpha "Hello Alpha"
-redis-cli PUBLISH /events/beta "`date`"
-</code></pre>
+        <pre><code>redis-cli PUBLISH /events/alpha "Hello Alpha"
+redis-cli PUBLISH /events/beta "`date`"</code></pre>
 
-<p>The demo shows has one channel(<code>/events/*</code>) using a glob to listen to multiple channels.</p>
+        <h3>How it works</h3>
 
-<h4>Made Possible By</h4>
+        <p>ESPubSub is a Go HTTP Handler which allows clients to subscribe to channels via
+        <strong>EventSource</strong>. Event Source is a simple browser api for reading from a long
+        poll connection. Most common browsers, except IE and Android mobile, support it. See the poyfills below for unsupported browsers.</p>
 
-<p><a href="http://github.com/antage/eventsource">http://github.com/antage/eventsource</a> and <a href="http://github.com/vmihailenco/redis">http://github.com/vmihailenco/redis</a></p>
+        <p>Channels receive data (strings) via a Redis PUBLISH command. ESPubSub
+        will need to connect to a running Redis server.</p>
 
-<h4>LICENSE</h4>
+        <p>Some EventSource polyfills (which I have not tried)</p>
 
-<p>Copyright (c) 2012 John Weir</p>
+        <p><a href="https://github.com/remy/polyfills/blob/master/EventSource.js">https://github.com/remy/polyfills/blob/master/EventSource.js</a></p>
 
-<p>Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the "Software"), to deal in
-the Software without restriction, including without limitation the rights to
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
-of the Software, and to permit persons to whom the Software is furnished to do
-so, subject to the following conditions:</p>
+        <p><a href="https://github.com/Yaffle/EventSource">https://github.com/Yaffle/EventSource</a></p>
 
-<p>The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.</p>
+        <h3>Install</h3>
 
-<p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.</p>
+        <pre><code>go get github.com/jweir/espubsub</code></pre>
+
+
+        <p>The demo shows has one channel(<code>/events/*</code>) using a glob to listen to multiple channels.</p>
+
+        <h4>Made Possible By</h4>
+
+        <p><a href="http://github.com/antage/eventsource">http://github.com/antage/eventsource</a> and <a href="http://github.com/vmihailenco/redis">http://github.com/vmihailenco/redis</a></p>
+
+        <h4>LICENSE</h4>
+
+        <p>Copyright (c) 2012 John Weir</p>
+
+        <p>Permission is hereby granted, free of charge, to any person obtaining a copy of
+        this software and associated documentation files (the "Software"), to deal in
+        the Software without restriction, including without limitation the rights to
+        use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+        of the Software, and to permit persons to whom the Software is furnished to do
+        so, subject to the following conditions:</p>
+
+        <p>The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.</p>
+
+        <p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.</p>
       </section>
     </div>
 
@@ -102,17 +101,17 @@ SOFTWARE.</p>
       </footer>
     </div>
 
-              <script type="text/javascript">
-            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-          </script>
-          <script type="text/javascript">
-            try {
-              var pageTracker = _gat._getTracker("UA-605430-4");
-            pageTracker._trackPageview();
-            } catch(err) {}
-          </script>
+    <script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+    </script>
+    <script type="text/javascript">
+try {
+  var pageTracker = _gat._getTracker("UA-605430-4");
+  pageTracker._trackPageview();
+} catch(err) {}
+    </script>
 
 
-  </body>
-</html>
+    </body>
+    </html>
