@@ -4,7 +4,7 @@ Easily send messages downstream to a web browser on dedicated channels.
 
 ESPubSub is a Go HTTP Handler which allows clients to subscribe to channels via
 **EventSource**. Event Source is a simple browser api for reading from a long
-poll connection. Allow common browsers, except IE and Android mobile, support
+poll connection. All common browsers, except IE and Android mobile, support
 it. See the poyfills for unsupported browsers.
 
 Channels receive data (strings) via a Redis PUBLISH command. ESPubSub
